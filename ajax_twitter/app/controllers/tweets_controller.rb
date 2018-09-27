@@ -4,11 +4,14 @@ class TweetsController < ApplicationController
   def create
     # simulate latency
     sleep(1)
-
+    p params
     @tweet = current_user.tweets.build(tweet_params)
 
     if @tweet.save
-      redirect_to request.referrer
+      respond_to do |format|
+      format.html { render :show }
+      format.json { render :show }
+    end
     else
       # Lazy: even respond with JSON to invalid HTML request.
       render json: @tweet.errors.full_messages, status: 422

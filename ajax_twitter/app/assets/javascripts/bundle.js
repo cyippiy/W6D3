@@ -120,6 +120,19 @@ const APIUtil = {
       url: `search?query=${queryVal}`,
       dataType: 'JSON'
     });
+  },
+
+  createTweet: (data) => {
+    // ...
+    return $.ajax({
+      method: 'POST',
+      url: `tweets`,
+      tweet: {
+        content: data.content,
+        mentioned_user_ids: data.mentioned_user_ids
+      },
+      dataType: 'JSON'
+    });
   }
 
 };
@@ -197,6 +210,34 @@ module.exports = FollowToggle;
 
 /***/ }),
 
+/***/ "./frontend/tweet_compose.js":
+/*!***********************************!*\
+  !*** ./frontend/tweet_compose.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const APIUtil = __webpack_require__(/*! ./api_util.js */ "./frontend/api_util.js");
+
+class TweetCompose {
+  constructor($el) {
+    this.$el = $el;
+    this.$el.on('submit', (e) => this.submit.bind(this, e)());
+  }
+
+  submit(e) {
+    e.preventDefault();
+    const data = {};
+    data.content = this.$el.find('textarea').val();
+    data.mentioned_user_ids = this.$el.find('select').val();
+    APIUtil.createTweet(data).then ((res) => alert(res), () => alert(2));
+  }
+}
+module.exports = TweetCompose;
+
+
+/***/ }),
+
 /***/ "./frontend/twitter.js":
 /*!*****************************!*\
   !*** ./frontend/twitter.js ***!
@@ -206,10 +247,12 @@ module.exports = FollowToggle;
 
 const FollowToggle = __webpack_require__(/*! ./follow_toggle.js */ "./frontend/follow_toggle.js");
 const UsersSearch = __webpack_require__(/*! ./users_search.js */ "./frontend/users_search.js");
+const TweetCompose = __webpack_require__(/*! ./tweet_compose.js */ "./frontend/tweet_compose.js");
 
 $(() => {
   const followToggle = new FollowToggle($('.follow-toggle'));
   const usersSearch = new UsersSearch($('.users-search'));
+  const tweetCompose = new TweetCompose($('.tweet-compose'));
 });
 
 
